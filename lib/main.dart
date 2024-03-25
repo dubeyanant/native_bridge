@@ -24,8 +24,10 @@ class MyApp extends StatelessWidget {
 class NativeBridge {
   static const MethodChannel _channel = MethodChannel('com.example/native');
 
-  static void getNativeData() async {
-    await _channel.invokeMethod('getNativeData').then((value) => print(value));
+  static void getNativeData(int num) async {
+    await _channel.invokeMethod('getNativeData', <String, int>{
+      "num": num,
+    }).then((value) => print(value));
   }
 }
 
@@ -34,15 +36,20 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    NativeBridge.getNativeData();
+    int i = 0;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('My App'),
       ),
-      body: const Center(
-        child: Text('data'),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            NativeBridge.getNativeData(++i);
+          },
+          child: const Text('Click me'),
+        ),
       ),
     );
   }

@@ -12,7 +12,11 @@ class MainActivity: FlutterActivity() {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
             call, result ->
             if (call.method == "getNativeData") {
-                val data = getNativeData()
+                if (!call.hasArgument("num")) {
+                    result.error("MissingArgumentError", "You must provide num parameter", null)
+                }
+                val num: Int = call.argument<Int>("num")!!
+                val data = getNativeData(num)
                 result.success(data)
             } else {
                 result.notImplemented()
@@ -20,8 +24,8 @@ class MainActivity: FlutterActivity() {
         }
     }
 
-    private fun getNativeData(): String {
+    private fun getNativeData(num: Int): String {
         // Implement your native code logic here
-        return "Native Data from Android"
+        return "From Native: $num"
     }
 }
